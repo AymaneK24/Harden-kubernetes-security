@@ -1,0 +1,118 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        # REPLACE with your actual frontend image name (e.g., myregistry/todo-frontend:latest)
+        image: hafssa260/frontend:latest
+        imagePullPolicy: IfNotPresent # Important for local/custom images
+        ports:
+        - containerPort: 3000
+        env:
+        # The frontend connects to the backend using the internal service name
+        - name: REACT_APP_BACKEND_URL
+          value: "http://localhost:30500/api/tasks" # Using the internal Kubernetes Service name
+
+---
+
+# --- 3. MongoDB Database Deployment and Service ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:4.4
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-password
+        volumeMounts:
+        - name: mongodb-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongodb-storage
+        persistentVolumeClaim:
+          claimName: mongodb-pvc
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        # REPLACE with your actual backend image name (e.g., myregistry/todo-backend:latest)
+        image: hafssa260/backend:latest
+        imagePullPolicy: IfNotPresent # Important for local/custom images
+        ports:
+        - containerPort: 3500
+        env:
+        - name: PORT
+          value: "3500"
+        - name: USE_DB_AUTH
+          value: "true"
+        - name: MONGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-username
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-password
+        # MONGO_CONN_STR uses the internal service name 'mongodb-service'
+        - name: MONGO_CONN_STR
+          value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-service:27017/todo-db?authSource=$(MONGO_USERNAME)"
+
+          
