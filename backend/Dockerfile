@@ -23,4 +23,3 @@ EXPOSE 3500
 
 
 CMD ["node", "app/index.js"]
-

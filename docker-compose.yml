@@ -24,7 +24,7 @@ services:
     container_name: todo-backend
     restart: unless-stopped
     ports:
-      - "3500:3500"
+      - "3501:3500"
     environment:
       PORT: 3500
       MONGO_CONN_STR: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb:27017/todo-db?authSource=${MONGO_USERNAME}
@@ -44,9 +44,9 @@ services:
     container_name: todo-frontend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
-      REACT_APP_BACKEND_URL: http://localhost:3500/api/tasks
+      REACT_APP_BACKEND_URL: http://localhost:3501/api/tasks
     depends_on:
       - backend
     networks:
