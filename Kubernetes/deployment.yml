@@ -113,6 +113,6 @@ spec:
               key: mongo-password
         # MONGO_CONN_STR uses the internal service name 'mongodb-service'
         - name: MONGO_CONN_STR
-          value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-service:27017/todo-db?authSource=$(MONGO_USERNAME)"
+          value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-service:27017/test?authSource=$(MONGO_USERNAME)"
 
           
