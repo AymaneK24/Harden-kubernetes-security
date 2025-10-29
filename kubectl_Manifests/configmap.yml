@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  labels:
+    app: todo-app
+data:
+  PORT: "3500"
+  USE_DB_AUTH: "true"
+  MONGO_CONN_STR_TEMPLATE: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-service:27017/test?authSource=admin"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  labels:
+    app: todo-app
+data:
+  REACT_APP_BACKEND_URL: "http://localhost:30500/api/tasks"

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: todo-app
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: todo-app
+        tier: backend
+    spec:
+      containers:
+      - name: backend
+        image: hafssa260/backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3500
+          name: backend-port
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: PORT
+        - name: USE_DB_AUTH
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: USE_DB_AUTH
+        - name: MONGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-username
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-password
+        - name: MONGO_CONN_STR
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: MONGO_CONN_STR_TEMPLATE
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3500
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3500
+          initialDelaySeconds: 5
+          periodSeconds: 5
