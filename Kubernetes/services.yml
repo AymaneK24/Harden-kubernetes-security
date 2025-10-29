@@ -42,6 +42,6 @@ spec:
   - protocol: TCP
     port: 3000
     targetPort: 3000
-    nodePort: 30080 # Assigning a fixed NodePort for external access (optional)
-  type: NodePort # Exposes the service externally
+    nodePort: 30080 
+  type: NodePort 
 

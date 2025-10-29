@@ -7,7 +7,6 @@ metadata:
 data:
   PORT: "3500"
   USE_DB_AUTH: "true"
-  MONGO_CONN_STR_TEMPLATE: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-service:27017/test?authSource=admin"
 
 ---
 apiVersion: v1

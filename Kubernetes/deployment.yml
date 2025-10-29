@@ -17,15 +17,23 @@ spec:
     spec:
       containers:
       - name: frontend
-        # REPLACE with your actual frontend image name (e.g., myregistry/todo-frontend:latest)
         image: aymanekh24/todo-frontend:vold
-        imagePullPolicy: IfNotPresent # Important for local/custom images
+        imagePullPolicy: IfNotPresent 
         ports:
         - containerPort: 3000
         env:
-        # The frontend connects to the backend using the internal service name
         - name: REACT_APP_BACKEND_URL
-          value: "http://localhost:30500/api/tasks" # Using the internal Kubernetes Service name
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config
+              key: REACT_APP_BACKEND_URL
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
 
 ---
 
@@ -71,8 +79,9 @@ spec:
           claimName: mongodb-pvc
 
 
----
 
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -91,16 +100,22 @@ spec:
     spec:
       containers:
       - name: backend
-        # REPLACE with your actual backend image name (e.g., myregistry/todo-backend:latest)
         image: aymanekh24/todo-backend:vold
-        imagePullPolicy: IfNotPresent # Important for local/custom images
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3500
+          name: backend-port
         env:
         - name: PORT
-          value: "3500"
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: PORT
         - name: USE_DB_AUTH
-          value: "true"
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: USE_DB_AUTH
         - name: MONGO_USERNAME
           valueFrom:
             secretKeyRef:
@@ -111,8 +126,64 @@ spec:
             secretKeyRef:
               name: todo-secret
               key: mongo-password
-        # MONGO_CONN_STR uses the internal service name 'mongodb-service'
         - name: MONGO_CONN_STR
           value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-service:27017/test?authSource=$(MONGO_USERNAME)"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
 
           
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  selector:
+    app: mongodb
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetPort: 27017
+  type: ClusterIP # Internal service only
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 3500
+    targetPort: 3500
+    nodePort: 30500 
+  type: NodePort 
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    nodePort: 30080 
+  type: NodePort 
+
