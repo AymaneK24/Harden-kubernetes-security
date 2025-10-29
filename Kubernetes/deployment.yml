@@ -18,7 +18,7 @@ spec:
       containers:
       - name: frontend
         # REPLACE with your actual frontend image name (e.g., myregistry/todo-frontend:latest)
-        image: hafssa260/frontend:latest
+        image: aymanekh24/todo-frontend:vold
         imagePullPolicy: IfNotPresent # Important for local/custom images
         ports:
         - containerPort: 3000
@@ -92,7 +92,7 @@ spec:
       containers:
       - name: backend
         # REPLACE with your actual backend image name (e.g., myregistry/todo-backend:latest)
-        image: hafssa260/backend:latest
+        image: aymanekh24/todo-backend:vold
         imagePullPolicy: IfNotPresent # Important for local/custom images
         ports:
         - containerPort: 3500
