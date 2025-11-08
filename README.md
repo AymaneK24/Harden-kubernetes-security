@@ -32,9 +32,9 @@ kubectl apply -f frontend/manifests/service.yaml
 ```
 
 #### Notes:
-variables environment for frontend are injected in the build time :
+.env vars for frontend are injected in the build time :
  -> npm start is a bad practice in dockerfile and means we can inject env vars in runtime which is baad!  
 
-variables environment for backend are injected in runtime
+.env vars for backend are injected in runtime
 
 browser communicates with both backend and frontend, it's not frontend that communicates with backend
