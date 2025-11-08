@@ -44,3 +44,8 @@ app.use("/api/tasks", tasks);
 
 const port = process.env.PORT || 3500;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
+
+// Add this to your Express app
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});

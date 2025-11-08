@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend  
+
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+
+      containers:
+      - name: backend
+        image: aymanekh24/todo-backend:v3
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - containerPort: 3500
+          name: backend-port
+
+        securityContext:
+          allowPrivilegeEscalation: false 
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1001
+          capabilities:
+            drop:
+              - ALL
+
+      
+
+        env:
+        - name: USE_DB_AUTH
+          valueFrom:
+            configMapKeyRef:
+              name: mongo-config
+              key: database_name
+
+        - name: MONGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-username
+
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: mongo-password
+
+        - name: MONGO_CONN_STR
+          value: "mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-service:27017/$(USE_DB_AUTH)?authSource=$(MONGO_USERNAME)"
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

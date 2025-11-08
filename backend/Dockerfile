@@ -1,17 +1,16 @@
-FROM node:20-alpine AS build
+FROM node:25-alpine3.21 AS build
 
 WORKDIR /app
 
 COPY package*.json ./
+
 RUN npm install --omit=dev
 
 COPY . .
 
-# no "npm run build" for backend apps
-# ---- Stage 2: Run ----
-FROM node:20-alpine
+FROM node:25-alpine3.21
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN addgroup -S appgroup -g 1001 && adduser -S appuser -G appgroup -u 1001
 
 WORKDIR /app
 
@@ -21,5 +20,4 @@ USER appuser
 
 EXPOSE 3500
 
-
-CMD ["node", "app/index.js"]
+CMD [ "node" , "app/index.js" ]

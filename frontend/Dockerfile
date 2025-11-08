@@ -1,29 +1,28 @@
-FROM node:20-alpine
+FROM node:20.19.5-alpine3.22 AS builder
 
-# Create non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-# Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install --omit=dev
-
-# Copy the rest of the app
-COPY --chown=appuser:appgroup . .
+COPY . .
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
-# Create writable cache before switching user
-RUN mkdir -p /app/node_modules/.cache && chmod -R 777 /app/node_modules/.cache
+RUN npm install
 
-# Switch to non-root user
-USER appuser
+RUN npm run build
 
 
-# Expose the port your app runs on
-EXPOSE 3000
+FROM nginxinc/nginx-unprivileged:alpine3.22-slim
 
-# Start the app
-CMD ["npm", "start"]
+COPY --from=builder /app/build /usr/share/nginx/html
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1
+
+
+CMD [ "nginx", "-g", "daemon off;" ]

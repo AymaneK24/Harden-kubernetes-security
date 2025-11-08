@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,7 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "mongoose": "^6.13.6"
+    "express": "^4.21.1",
+    "mongoose": "^8.8.3"
+  },
+  "overrides": {
+    "brace-expansion": "^2.0.2",
+    "cross-spawn": "^7.0.5"
   }
 }
