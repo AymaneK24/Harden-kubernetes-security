@@ -15,17 +15,21 @@ kubectl apply -f mongo/manifests/statefulset.yaml
 
 kubectl apply -f mongo/manifests/service.yaml
 
+```
+
+## Deploy Backend
+``` bash
 kubectl apply -f backend/manifests/deployment.yaml
 
 kubectl apply -f backend/manifests/service.yaml
+```
 
+## Deploy frontend
+``` bash
 kubectl apply -f frontend/manifests/deployment.yaml
 
 kubectl apply -f frontend/manifests/service.yaml
-
 ```
-
-## Deploy The Backend
 
 #### Notes:
 variables environment for frontend are injected in the build time :
