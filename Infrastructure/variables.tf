@@ -1,29 +1,44 @@
-variable "resource_group_location" {
-  type        = string
-  default     = "eastus"
-  description = "Location of the resource group."
-}
-
-variable "resource_group_name_prefix" {
-  type        = string
-  default     = "rg"
-  description = "Prefix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
-}
-
-variable "node_count" {
-  type        = number
-  description = "The initial quantity of nodes for the node pool."
-  default     = 1
-}
-
 variable "msi_id" {
   type        = string
   description = "The Managed Service Identity ID. Set this value if you're running this example using Managed Identity as the authentication method."
   default     = null
 }
 
-variable "username" {
+
+variable "resource_group_name" {
+  description = "Name of the resource group"
   type        = string
-  description = "The admin username for the new cluster."
-  default     = "azureadmin"
+  default     = "integrated_project_resource_group"
 }
+
+
+variable "resource_group_location" {
+  description = "Location of the resource group"
+  type        = string
+  default     = "eastus"
+}
+
+variable "aks_cluster_name" {
+  description = "Name of the AKS cluster"
+  type        = string
+  default     = "integrated_project_aks_cluster"
+}
+
+variable "aks_dns_prefix" {
+  description = "DNS prefix for AKS cluster"
+  type        = string
+  default     = "integrated_project_aks_cluster"
+}
+
+variable "node_count" {
+  description = "Number of AKS worker nodes"
+  type        = number
+  default     = 1
+}
+
+variable "username" {
+  description = "Admin username for the cluster"
+  type        = string
+  default     = "azureuser"
+}
+
