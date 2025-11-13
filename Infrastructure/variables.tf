@@ -27,7 +27,7 @@ variable "aks_cluster_name" {
 variable "aks_dns_prefix" {
   description = "DNS prefix for AKS cluster"
   type        = string
-  default     = "integrated_project_aks_cluster"
+  default     = "integrated-project-aks"
 }
 
 variable "node_count" {

@@ -1,3 +1,4 @@
+# backend-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,5 +10,4 @@ spec:
   - protocol: TCP
     port: 3500
     targetPort: 3500
-    nodePort: 30500 
-  type: NodePort 
+  type: ClusterIP  # Internal only

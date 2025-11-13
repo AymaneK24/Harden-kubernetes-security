@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         app: backend  
-
+        
     spec:
       securityContext:
         runAsNonRoot: true
@@ -39,8 +39,6 @@ spec:
           capabilities:
             drop:
               - ALL
-
-      
 
         env:
         - name: USE_DB_AUTH
@@ -71,3 +69,21 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+        
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3500
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3500
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3

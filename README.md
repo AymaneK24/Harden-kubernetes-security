@@ -5,30 +5,30 @@
 ## Deploy MongoDB Database
 
 ``` bash
-kubectl apply -f mongo/manifests/pvc.yaml
+kubectl apply -f mongo/manifests/pvc.yaml -n ingress-basic
 
-kubectl apply -f mongo/manifests/secret.yaml
+kubectl apply -f mongo/manifests/secret.yaml -n ingress-basic
 
-kubectl apply -f mongo/manifests/configmap.yaml
+kubectl apply -f mongo/manifests/configmap.yaml -n ingress-basic
 
-kubectl apply -f mongo/manifests/statefulset.yaml
+kubectl apply -f mongo/manifests/statefulset.yaml -n ingress-basic
 
-kubectl apply -f mongo/manifests/service.yaml
+kubectl apply -f mongo/manifests/service.yaml -n ingress-basic
 
 ```
 
 ## Deploy Backend
 ``` bash
-kubectl apply -f backend/manifests/deployment.yaml
+kubectl apply -f backend/manifests/deployment.yaml -n ingress-basic
 
-kubectl apply -f backend/manifests/service.yaml
+kubectl apply -f backend/manifests/service.yaml -n ingress-basic
 ```
 
 ## Deploy frontend
 ``` bash
-kubectl apply -f frontend/manifests/deployment.yaml
+kubectl apply -f frontend/manifests/deployment.yaml -n ingress-basic
 
-kubectl apply -f frontend/manifests/service.yaml
+kubectl apply -f frontend/manifests/service.yaml -n ingress-basic
 ```
 
 #### Notes:
