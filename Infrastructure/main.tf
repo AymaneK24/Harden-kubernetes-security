@@ -1,35 +1,21 @@
-
 resource "azurerm_resource_group" "rg" {
-  location = var.resource_group_location
   name     = var.resource_group_name
+  location = var.resource_group_location
 }
 
-
 resource "azurerm_kubernetes_cluster" "k8s" {
-
-  location            = azurerm_resource_group.rg.location
   name                = var.aks_cluster_name
+  location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = var.aks_dns_prefix
 
-  identity {
-    type = "SystemAssigned"
-  }
-
   default_node_pool {
     name       = "agentpool"
-    vm_size    = "Standard_B2s"
     node_count = var.node_count
+    vm_size    = "Standard_B2s"
   }
-  linux_profile {
-    admin_username = var.username
 
-    ssh_key {
-      key_data = azapi_resource_action.ssh_public_key_gen.output.publicKey
-    }
-  }
-  network_profile {
-    network_plugin    = "kubenet"
-    load_balancer_sku = "standard"
+  identity {
+    type = "SystemAssigned"
   }
 }
