@@ -49,6 +49,7 @@ browser communicates with both backend and frontend, it's not frontend that comm
 This guide documents the complete deployment process for deploying a three-tier application (MongoDB, Backend, Frontend) on Azure Kubernetes Service (AKS) with secure HTTPS using Let's Encrypt.
 
 ---
+![alt text](<WhatsApp Image 2025-11-15 at 17.50.47_460a3c40.jpg>)
 
 ##  Table of Contents
 
